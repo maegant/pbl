@@ -31,7 +31,7 @@ end
 
 % Separate function to plot posterior mean for corresponding iteration
 function f = plotIteration(obj,isSave,isNormalize,iteration,plottype)
-f = figure(203); clf;
+f = figure(); clf;
 
 t = tiledlayout('flow');
 % title(t,sprintf('Iteration %i',iteration));
@@ -141,11 +141,11 @@ if ~isempty(model.mean)
             end
             grid(ax,'on');
             axis(ax,'square')
-%             xlabel(ax,obj.settings.parameters(C(c,1)).name);
+            xlabel(ax,obj.settings.parameters(C(c,1)).name);
             xlim(ax,[obj.settings.lower_bounds(C(c,1)) obj.settings.upper_bounds(C(c,1))]);
-%             ylabel(ax,obj.settings.parameters(C(c,2)).name);
-            ylim(ax,round([min(obj.settings.parameters(C(c,2)).actions), max(obj.settings.parameters(C(c,2)).actions)],1));
-            yticks(ax,round(linspace(min(obj.settings.parameters(C(c,2)).actions), max(obj.settings.parameters(C(c,2)).actions),3),1));
+            ylabel(ax,obj.settings.parameters(C(c,2)).name);
+            ylim(ax,round([min(obj.settings.parameters(C(c,2)).actions), max(obj.settings.parameters(C(c,2)).actions)],3));
+            yticks(ax,round(linspace(min(obj.settings.parameters(C(c,2)).actions), max(obj.settings.parameters(C(c,2)).actions),3),3));
             zlabel(ax,'Posterior Mean');
             if isNormalize
                 zlim(ax,[0,1]);

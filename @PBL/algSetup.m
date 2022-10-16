@@ -5,22 +5,24 @@ settings = obj.settings;
 
 % --------------------- General Settings ----------------------------------
 
-% Assign folder to save results in
-if ~isfield(settings,'save_folder')
-    t = datetime;
-    t.Format = 'MMM_dd_yy_HH_mm_ss';
-    timestamp = sprintf('%s',t);
-    settings.save_folder = ['export/',settings.exampleName,'/',timestamp];
-end
-
 % default to not saving automatically
 if ~isfield(obj.settings,'isSave')
     settings.isSave = 0;
 end
+
+% Assign folder to save results in
+if ~isfield(settings,'save_folder') && settings.isSave
+    t = datetime;
+    t.Format = 'MMM_dd_yy_HH_mm_ss';
+    timestamp = sprintf('%s',t);
+    settings.save_folder = ['export/',timestamp];
+else
     
 % Create save folder if it doesn't already exist
-if ~isfolder(settings.save_folder)
-    mkdir(settings.save_folder);
+if settings.isSave
+    if ~isfolder(settings.save_folder)
+        mkdir(settings.save_folder);
+    end
 end
 
 % max number of iterations to run

@@ -4,23 +4,19 @@ function [X, Y, Z] = getPosteriorSurfs(obj, iteration, isNormalize, isTrue,isFin
 % isTrue: flag for calculating subdimension surfaces for true objective function
 % isFine: flag for claculating surfaces over a finer set of actions
 
-if nargin < 5
+grid_shape = [obj.settings.parameters(:).num_actions]; 
+    
+if nargin < 4
     isTrue = 0;
 end
-if nargin < 6
+if nargin < 5
     model = obj.post_model(iteration);
     isFine = 0;
     isFinal = 0;
 else
     model = obj.final_posterior;
     isFine = 1;
-end
-
-% Unpack object
-if isFine
-    grid_shape = repmat(100,1,length(obj.settings.parameters));
-else
-    grid_shape = [obj.settings.parameters(:).num_actions]; 
+    grid_shape = obj.final_posterior.gridsize;
 end
             
 if isTrue

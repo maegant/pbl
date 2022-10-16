@@ -5,13 +5,13 @@ function f = plotFinal(obj, isSave)
 isNormalize = obj.settings.isNormalize;
 
 % Option to plot samples
-plotSamples = 0;
+plotSamples = 1;
 
 if nargin < 2
     isSave = 0;
 end
 
-f = figure(210); clf;
+f = figure(1); clf; %210
 
 t = tiledlayout('flow');
 % title(t,sprintf('Iteration %i',iteration));
@@ -36,7 +36,8 @@ if ~isempty(model.mean)
     [~,state_dim] = size(points);
     
     % get surface to plot later
-    [X, Y, Z] = getSurface('full',model.actions,norm_mean,model.gridsize,isNormalize);
+%     [X, Y, Z] = utils.getSurface('full',model.actions,norm_mean,model.gridsize,isNormalize);
+    [X, Y, Z] = plotting.getPosteriorSurfs(obj,iteration,isNormalize,0,1);
     
     % Plot based on if posterior over all points or subset of points
     if state_dim == 1
@@ -87,35 +88,35 @@ if ~isempty(model.mean)
             %             end
             
             % Final posterior surface
-            surf(ax,X{c},Y{c},Z{c},'FaceAlpha',0.5,'FaceColor','interp','EdgeAlpha',0.2);
+%             surf(ax,X{c},Y{c},Z{c},'FaceAlpha',0.5,'FaceColor','interp','EdgeAlpha',0.2);
             
-            % Plot sampled actions
-            if plotSamples
-                tempX = X{c}; tempY = Y{c}; tempZ = Z{c};
-                issampled = zeros(0,1);
-                for i = 1:size(obj.unique_visited_actions,1)
-                    % find x and y ind
-                    [~,indx] = min(abs(tempX(1,:) - obj.unique_visited_actions(i,C(c,1))));
-                    [~,indy] = min(abs(tempY(:,1) - obj.unique_visited_actions(i,C(c,2))));
-                    ind = sub2ind(size(tempX),indy,indx);
-                    issampled = cat(1,issampled,ind);
-                end
-                %             scatter3(ax,tempX(issampled),tempY(issampled),tempZ(issampled),100,'ko','filled','MarkerFaceAlpha',0.75);
-                scatter3(ax,tempX(issampled),tempY(issampled),zeros(length(issampled),1)+0.02,100,'ko','filled','MarkerFaceAlpha',0.5);
-            end
-            
+
             % Final posterior projected onto contour plot
-            [~,h] = contourf(ax,X{c},Y{c},Z{c});
+            [~,h] = contourf(ax,X{c},Y{c},Z{c}); 
             hh = get(h,'Children');
             for i=1:numel(hh)
                 zdata = ones(size( get(hh(i),'XData') ));
                 set(hh(i), 'ZData',-10*zdata)
             end
             
-            % Formatting
-            view(ax,3);
-            grid(ax,'on');
+            % Plot sampled actions
+            if plotSamples
+                sampled_actions = obj.unique_visited_actions(~logical(obj.unique_visited_isCoac),:);
+                tempX = X{c}; tempY = Y{c}; tempZ = Z{c};
+                issampled = zeros(0,1);
+                for i = 1:size(sampled_actions,1)
+                    % find x and y ind
+                    [~,indx] = min(abs(tempX(1,:) - sampled_actions(i,C(c,1))));
+                    [~,indy] = min(abs(tempY(:,1) - sampled_actions(i,C(c,2))));
+                    ind = sub2ind(size(tempX),indy,indx);
+                    issampled = cat(1,issampled,ind);
+                end
+                scatter3(ax,tempX(issampled),tempY(issampled),zeros(length(issampled),1)+0.02,100,'ko','filled','MarkerFaceAlpha',1);
+            end
             
+            % Formatting
+            view(ax,2);
+%             grid(ax,'on');
             
             xmin = min(obj.settings.parameters(C(c,1)).actions); 
             xmax = max(obj.settings.parameters(C(c,1)).actions);

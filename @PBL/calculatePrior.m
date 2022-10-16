@@ -53,7 +53,7 @@ cov = cov + GP_noise_var * eye(size(X,1));
 %             lengthscale = lengthscales(dim);
 %             if lengthscale > 0
 %                 cov(i,j) = cov(i,j)* ...
-%                     exp(-0.5 * ((pt2(dim)) / lengthscale)^2);
+%                     exp(-0.5 * ((pt2(dim)-pt1(dim)) / lengthscale)^2);
 %             elseif lengthscale == 0 && pt1(dim) ~= pt2(dim)
 %                 cov(i,j) = 0;
 %             end

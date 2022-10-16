@@ -130,6 +130,9 @@ classdef PBL < handle
         updatePosterior(obj,which,points_to_include,globalInds,iteration);
         [pref_x, label] = coac2pref(obj,suggestion, iteration);
         
+        % Hyperparameter fitting
+        [nomParams, fitParams] = fitParams(obj);
+        
     end
     
 end

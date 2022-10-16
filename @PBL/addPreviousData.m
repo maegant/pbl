@@ -43,6 +43,13 @@ obj.previous_data.ordinal.y = ord_labels;
 
 obj.unique_visited_actions = action_list;
 obj.unique_visited_action_globalInds = globalInds;
-obj.unique_visited_isCoac = zeros(length(globalInds),1);
 
+% get flag indicating if actions are coactive or sampled
+obj.unique_visited_isCoac = zeros(length(globalInds),1);
+sampled_inds = [reshape(obj.previous_data.preference.x_subset,[],1);obj.previous_data.ordinal.x_subset];
+only_coac = setdiff(visitedInds,sampled_inds);
+obj.unique_visited_isCoac(only_coac) = 1;
+
+% update posterior:
+obj.updatePosterior('subset',action_list,globalInds,1);
 
